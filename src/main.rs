@@ -1,9 +1,23 @@
+use colored::Colorize;
 use std::io::stdin;
+
 mod screen;
 mod todo;
+mod util;
 
 fn main() {
-    println!("Welcome to my crap todo list");
+    println!(
+        "{}",
+        format!("\n=======================================").blue()
+    );
+    println!(
+        "{}",
+        format!("Welcome to a simple Rust CLI todo-list").blue()
+    );
+    println!(
+        "{}",
+        format!("=======================================\n").blue()
+    );
 
     let mut current_screen = screen::Screen::Menu;
     let mut todo_list: Vec<todo::Todo> = Vec::new();
@@ -11,50 +25,32 @@ fn main() {
     while current_screen != screen::Screen::Exit {
         let mut input = String::new();
 
-        println!(
-            "You are currently on screen {}",
-            screen::screen_name(&current_screen)
-        );
+        let screen_name = format!("{}", screen::screen_name(&current_screen))
+            .purple()
+            .bold();
+
+        println!("\n{}\n", screen_name);
 
         if current_screen == screen::Screen::TodoList {
-            print_todo_list(&todo_list)
+            screen::display_todos_screen(&todo_list)
         }
 
         if current_screen == screen::Screen::AddTodo {
-            let mut new_todo_input = String::new();
-
-            stdin()
-                .read_line(&mut new_todo_input)
-                .ok()
-                .expect("Please write something");
-
-            trim_newline(&mut new_todo_input);
-
-            let mut new_todo = todo::Todo {
-                name: new_todo_input,
-                is_completed: false,
-            };
-
-            new_todo.mark_as_done();
-
-            todo_list.push(new_todo);
+            screen::display_add_todo(&mut todo_list)
         }
 
-        println!("1. List your todos");
-        println!("2. Add a todo");
-        println!("3. Toggle a todo as done");
-        println!("4. Edit a todo");
-        println!("5. Exit");
-        if current_screen != screen::Screen::Menu {
-            println!("0. Back to main menu");
+        if current_screen == screen::Screen::ToggleTodo {
+            screen::display_toggle_todo(&mut todo_list)
         }
+
+        current_screen = screen::display_menu_options(current_screen);
 
         stdin()
             .read_line(&mut input)
             .ok()
             .expect("Please write something");
 
-        trim_newline(&mut input);
+        util::trim_newline(&mut input);
 
         let chosen_screen = input.parse().unwrap();
 
@@ -65,25 +61,4 @@ fn main() {
             Err(_err) => println!("Invalid Screen"),
         }
     }
-}
-
-// TODO: Implement this as a trait to string type maybe?
-fn trim_newline(s: &mut String) {
-    if s.ends_with('\n') {
-        s.pop();
-        if s.ends_with('\r') {
-            s.pop();
-        }
-    }
-}
-
-fn print_todo_list(todo_list: &Vec<todo::Todo>) -> () {
-    println!("Your todo list:");
-    println!("\n");
-    println!("=======================");
-    for t in todo_list {
-        println!("{}, Completed: {}", &t.name, &t.is_completed);
-    }
-    println!("=======================");
-    println!("\n");
 }

@@ -1,0 +1,9 @@
+// TODO: Implement this as a trait to string type maybe?
+pub fn trim_newline(s: &mut String) {
+    if s.ends_with('\n') {
+        s.pop();
+        if s.ends_with('\r') {
+            s.pop();
+        }
+    }
+}
