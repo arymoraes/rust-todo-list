@@ -1,3 +1,4 @@
+use crate::data;
 use crate::todo;
 use crate::util;
 
@@ -28,6 +29,7 @@ fn add_todo(todo_list: &mut Vec<todo::Todo>, todo_name: String) -> () {
     println!("{}", "\nTodo successfully added!\n".green());
 
     todo_list.push(new_todo);
+    data::update_list(todo_list).unwrap();
 }
 
 #[test]

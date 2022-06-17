@@ -1,11 +1,14 @@
 use colored::Colorize;
 use std::io::stdin;
 
+mod data;
 mod screens;
 mod todo;
 mod util;
 
 fn main() {
+    data::open_todo_list();
+
     println!(
         "{}",
         format!("\n=======================================").blue()
@@ -20,7 +23,7 @@ fn main() {
     );
 
     let mut current_screen = screens::Screen::Menu;
-    let mut todo_list: Vec<todo::Todo> = Vec::new();
+    let mut todo_list: Vec<todo::Todo> = data::get_todos();
 
     while current_screen != screens::Screen::Exit {
         let mut input = String::new();
