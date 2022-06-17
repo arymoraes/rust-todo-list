@@ -28,9 +28,7 @@ fn main() {
     while current_screen != screens::Screen::Exit {
         let mut input = String::new();
 
-        let screen_name = format!("{}", screens::screen_name(&current_screen))
-            .purple()
-            .bold();
+        let screen_name = format!("{}", String::from(current_screen)).purple().bold();
 
         println!("\n{}\n", screen_name);
 
@@ -55,13 +53,8 @@ fn main() {
 
         util::trim_newline(&mut input);
 
-        let chosen_screen = input.parse().unwrap();
+        let chosen_screen: u8 = input.parse().unwrap();
 
-        let screen = screens::select_screen(chosen_screen);
-
-        match screen {
-            Ok(new_screen) => current_screen = new_screen,
-            Err(_err) => println!("Invalid Screen"),
-        }
+        current_screen = screens::Screen::from(chosen_screen);
     }
 }

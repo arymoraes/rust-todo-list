@@ -46,7 +46,7 @@ pub fn update_list(t: &Vec<todo::Todo>) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-// Initializes an empty array on JSON File if we're creating the file
+/// Initializes an empty array on JSON File if we're creating the file
 fn initialize_json_array(path: &str) -> () {
     let stringified_array = "[]";
     write(path, stringified_array).expect("Unable to write to file");
